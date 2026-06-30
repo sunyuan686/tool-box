@@ -1,0 +1,61 @@
+import { useId } from 'react'
+
+type BrandIconProps = {
+  size?: number
+  className?: string
+}
+
+export function BrandIcon({ size = 40, className }: BrandIconProps) {
+  const id = useId().replace(/:/g, '')
+  const bgId = `brand-bg-${id}`
+  const handleId = `brand-handle-${id}`
+
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 40 40"
+      fill="none"
+      width={size}
+      height={size}
+      className={className}
+      aria-hidden="true"
+    >
+      <rect width="40" height="40" rx="10" fill={`url(#${bgId})`} />
+      <path
+        d="M12.5 12h15a3 3 0 0 1 3 3v2.5H9.5V15a3 3 0 0 1 3-3Z"
+        fill={`url(#${handleId})`}
+      />
+      <rect
+        x="8.5"
+        y="17.5"
+        width="23"
+        height="14.5"
+        rx="4"
+        fill="#101A26"
+        stroke="#5C9DFF"
+        strokeWidth="1.4"
+      />
+      <rect x="12.5" y="21" width="4.5" height="4.5" rx="1.2" fill="#3D8BFD" />
+      <rect x="17.75" y="21" width="4.5" height="4.5" rx="1.2" fill="#5C9DFF" fillOpacity="0.9" />
+      <rect x="23" y="21" width="4.5" height="4.5" rx="1.2" fill="#38BDF8" fillOpacity="0.8" />
+      <rect x="12.5" y="26.5" width="15" height="2.75" rx="1.375" fill="#3D8BFD" fillOpacity="0.38" />
+      <defs>
+        <linearGradient id={bgId} x1="4" y1="4" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#0E1620" />
+          <stop offset="1" stopColor="#111E2E" />
+        </linearGradient>
+        <linearGradient
+          id={handleId}
+          x1="9.5"
+          y1="12"
+          x2="30.5"
+          y2="17.5"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#2563EB" />
+          <stop offset="1" stopColor="#38BDF8" />
+        </linearGradient>
+      </defs>
+    </svg>
+  )
+}
