@@ -204,6 +204,10 @@ export function JsonFormatter() {
         <p>格式化、压缩、校验、排序键名，支持转义与文件导入导出。</p>
       </div>
 
+      <div className={`status-bar status-${status.type}`} role="status" aria-live="polite">
+        {status.message}
+      </div>
+
       <div className="toolbar" role="toolbar" aria-label="JSON 工具操作">
         <div className="toolbar-group">
           <button type="button" className="btn primary" onClick={handleFormat}>
@@ -314,10 +318,6 @@ export function JsonFormatter() {
           </div>
         </div>
       </div>
-
-      <footer className={`status-bar status-${status.type}`} aria-live="polite">
-        {status.message}
-      </footer>
     </section>
   )
 }
