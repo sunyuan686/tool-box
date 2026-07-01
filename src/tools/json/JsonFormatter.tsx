@@ -78,6 +78,7 @@ export function JsonFormatter() {
       setError(result.error, result.line, result.column)
       return
     }
+    setInput(result.formatted)
     setSuccess('格式化成功', result.formatted)
   }, [indent, input, setError, setSuccess])
 
@@ -87,6 +88,7 @@ export function JsonFormatter() {
       setError(result.error, result.line, result.column)
       return
     }
+    setInput(result.formatted)
     setSuccess('压缩成功', result.formatted)
   }, [input, setError, setSuccess])
 
@@ -116,6 +118,7 @@ export function JsonFormatter() {
       setError(result.error, result.line, result.column)
       return
     }
+    setInput(result.formatted)
     setSuccess('转义成功', result.formatted)
   }, [input, setError, setSuccess])
 
@@ -125,6 +128,7 @@ export function JsonFormatter() {
       setError(result.error, result.line, result.column)
       return
     }
+    setInput(result.formatted)
     setSuccess('反转义成功', result.formatted)
   }, [input, setError, setSuccess])
 
