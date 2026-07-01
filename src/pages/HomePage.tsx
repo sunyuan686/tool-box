@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { BrandIcon } from '../components/BrandIcon'
-import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE } from '../lib/brand'
+import { ToolIcon } from '../components/icons/ToolIcons'
+import { SITE_NAME } from '../lib/brand'
 import { tools } from '../lib/tools'
 
 export function HomePage() {
@@ -9,24 +10,26 @@ export function HomePage() {
       <div className="page-header">
         <div className="home-hero">
           <BrandIcon size={56} className="home-logo" />
-          <div>
-            <h1>{SITE_NAME}</h1>
-            <p className="home-tagline">{SITE_TAGLINE}</p>
-          </div>
+          <h1>{SITE_NAME}</h1>
         </div>
-        <p>{SITE_DESCRIPTION}</p>
       </div>
 
       <div className="tool-grid">
         {tools.map((tool) =>
           tool.available ? (
             <Link key={tool.id} to={tool.path} className="tool-card">
+              <div className="tool-card-icon" aria-hidden="true">
+                <ToolIcon name={tool.icon} size={22} />
+              </div>
               <h2>{tool.name}</h2>
               <p>{tool.description}</p>
               <span className="tool-card-cta">打开工具</span>
             </Link>
           ) : (
             <article key={tool.id} className="tool-card disabled">
+              <div className="tool-card-icon" aria-hidden="true">
+                <ToolIcon name={tool.icon} size={22} />
+              </div>
               <h2>{tool.name}</h2>
               <p>{tool.description}</p>
               <span className="tool-card-cta">即将上线</span>
