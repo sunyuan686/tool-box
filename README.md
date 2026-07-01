@@ -31,6 +31,19 @@ npm run deploy
 npx wrangler login
 ```
 
+## GitHub Actions 自动部署
+
+推送到 `main` 分支时自动构建并部署到 Cloudflare Workers（与 Orbit 项目相同方式）。
+
+在 GitHub 仓库 **Settings → Secrets and variables → Actions** 中配置：
+
+| Secret | 说明 |
+|--------|------|
+| `CF_API_TOKEN` | Cloudflare API Token（需 Workers 编辑权限） |
+| `CF_ACCOUNT_ID` | Cloudflare 账号 ID |
+
+也可在 Actions 页手动触发 **Deploy to Cloudflare Workers** workflow。
+
 ## 功能
 
 ### JSON 格式化

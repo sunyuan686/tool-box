@@ -32,17 +32,28 @@ export function BrandIcon({ size = 40, className }: BrandIconProps) {
         height="14.5"
         rx="4"
         fill="#101A26"
-        stroke="#5C9DFF"
-        strokeWidth="1.4"
+        stroke="#4A8FE7"
+        strokeWidth="1.25"
       />
-      <rect x="12.5" y="21" width="4.5" height="4.5" rx="1.2" fill="#3D8BFD" />
-      <rect x="17.75" y="21" width="4.5" height="4.5" rx="1.2" fill="#5C9DFF" fillOpacity="0.9" />
-      <rect x="23" y="21" width="4.5" height="4.5" rx="1.2" fill="#38BDF8" fillOpacity="0.8" />
-      <rect x="12.5" y="26.5" width="15" height="2.75" rx="1.375" fill="#3D8BFD" fillOpacity="0.38" />
+      <path
+        fill="none"
+        stroke="#5C9DFF"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M14.25 22.25c-1.15 0-1.85.85-1.85 1.85v1.3c0 1 .7 1.85 1.85 1.85M25.75 22.25c1.15 0 1.85.85 1.85 1.85v1.3c0 1-.7 1.85-1.85 1.85"
+      />
+      <path
+        stroke="#38BDF8"
+        strokeWidth="1.35"
+        strokeLinecap="round"
+        d="M18.5 25.75h3"
+      />
+      <circle cx="20" cy="21.25" r="0.85" fill="#3D8BFD" />
       <defs>
-        <linearGradient id={bgId} x1="4" y1="4" x2="36" y2="36" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#0E1620" />
-          <stop offset="1" stopColor="#111E2E" />
+        <linearGradient id={bgId} x1="6" y1="6" x2="34" y2="34" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#0C141D" />
+          <stop offset="1" stopColor="#111C2A" />
         </linearGradient>
         <linearGradient
           id={handleId}
