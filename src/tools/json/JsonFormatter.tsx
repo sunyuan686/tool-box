@@ -235,26 +235,36 @@ export function JsonFormatter() {
 
   const handleFormat = useCallback(() => {
     const result = formatJsonBestEffort(input, indent)
+    if (result.autoRepaired && result.formatted !== input) {
+      setFormatNotice(null)
+      setRepairPreview({
+        original: input,
+        repaired: result.formatted,
+        message: '格式化需要纠正语法错误，请确认是否应用修改',
+      })
+      return
+    }
     patchActive({ content: result.formatted })
     applyOutput(result.formatted)
-    if (result.autoRepaired) {
-      setFormatNotice('已自动纠正语法错误并完成格式化')
-    } else {
-      setFormatNotice(null)
-    }
+    setFormatNotice(null)
   }, [indent, input, patchActive, applyOutput])
 
   const handleFormatAll = useCallback(() => {
-    let repairedCount = 0
+    let skippedRepairCount = 0
     const next = documents.map((doc) => {
       if (!doc.content.trim()) return doc
       const result = formatJsonBestEffort(doc.content, indent)
-      if (result.autoRepaired) repairedCount++
+      if (result.autoRepaired && result.formatted !== doc.content) {
+        skippedRepairCount++
+        return { ...doc, output: result.formatted }
+      }
       return { ...doc, content: result.formatted, output: result.formatted }
     })
     setDocuments(next)
-    if (repairedCount > 0) {
-      setFormatNotice(`已自动纠正 ${repairedCount} 个文档的语法错误`)
+    if (skippedRepairCount > 0) {
+      setFormatNotice(
+        `${skippedRepairCount} 个文档存在语法错误，已预览到输出区，请逐个格式化并确认后再应用`,
+      )
     } else {
       setFormatNotice(null)
     }
