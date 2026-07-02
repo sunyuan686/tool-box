@@ -236,17 +236,35 @@ export function JsonFormatter() {
 
   const handleFormat = useCallback(() => {
     const result = formatJson(input, indent)
-    if (!result.ok) return
-    patchActive({ content: result.formatted })
-    applyOutput(result.formatted)
+    if (result.ok) {
+      patchActive({ content: result.formatted })
+      applyOutput(result.formatted)
+      return
+    }
+
+    const repairResult = repairJson(input, indent)
+    if (!repairResult.ok) return
+    if (repairResult.formatted === input) {
+      applyOutput(repairResult.formatted)
+      return
+    }
+    setRepairPreview({
+      original: input,
+      repaired: repairResult.formatted,
+      message: repairResult.repaired ? '检测到语法错误，已自动纠正' : 'JSON 已合法，已格式化',
+    })
   }, [indent, input, patchActive, applyOutput])
 
   const handleFormatAll = useCallback(() => {
     const next = documents.map((doc) => {
       if (!doc.content.trim()) return doc
       const result = formatJson(doc.content, indent)
-      if (!result.ok) return doc
-      return { ...doc, content: result.formatted, output: result.formatted }
+      if (result.ok) {
+        return { ...doc, content: result.formatted, output: result.formatted }
+      }
+      const repairResult = repairJson(doc.content, indent)
+      if (!repairResult.ok) return doc
+      return { ...doc, content: repairResult.formatted, output: repairResult.formatted }
     })
     setDocuments(next)
   }, [documents, indent])
@@ -430,7 +448,12 @@ export function JsonFormatter() {
       {workMode === 'edit' ? (
       <div className="toolbar" role="toolbar" aria-label="JSON 工具操作">
         <div className="toolbar-group">
-          <button type="button" className="btn primary" onClick={handleFormat}>
+          <button
+            type="button"
+            className="btn primary"
+            onClick={handleFormat}
+            title="格式化 JSON；若有语法错误将尝试自动纠正"
+          >
             格式化
           </button>
           <button type="button" className="btn accent" onClick={handleMinifyCopy}>
