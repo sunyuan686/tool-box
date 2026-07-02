@@ -18,6 +18,14 @@ export const tools: Tool[] = [
     available: true,
     icon: 'json',
   },
+  {
+    id: 'markdown',
+    name: 'Markdown 预览',
+    description: '实时预览 Markdown，支持 GFM、代码高亮与 Mermaid 图表',
+    path: '/markdown',
+    available: true,
+    icon: 'markdown',
+  },
 ]
 
 export function getToolById(id: string) {

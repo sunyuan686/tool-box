@@ -71,7 +71,29 @@ export function ShieldLocalIcon({ size = defaults.size, className }: IconProps) 
   )
 }
 
-export type ToolIconName = 'home' | 'json'
+export type ToolIconName = 'home' | 'json' | 'markdown'
+
+export function MarkdownIcon({ size = defaults.size, className }: IconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      width={size}
+      height={size}
+      className={className}
+      aria-hidden="true"
+    >
+      <path
+        fill="currentColor"
+        d="M6.5 3.25A1.75 1.75 0 0 1 8.25 1.5h4.38a1.75 1.75 0 0 1 1.24.51l2.13 2.13A1.75 1.75 0 0 0 15.74 5H15.25A1.75 1.75 0 0 1 17 6.75v9.5A1.75 1.75 0 0 1 15.25 18h-7A1.75 1.75 0 0 1 6.5 16.25V3.25Zm1.75-.75a.25.25 0 0 0-.25.25v12.5c0 .14.11.25.25.25h7c.14 0 .25-.11.25-.25V6.75a.25.25 0 0 0-.25-.25H10.12a1.75 1.75 0 0 1-1.24-.51L6.75 5.1a.25.25 0 0 0-.18-.07H8.25Z"
+      />
+      <path
+        fill="currentColor"
+        d="M8.5 8.25h3v1.5h-3v-1.5Zm0 2.75h5.5v1.5H8.5V11Zm0 2.75h4v1.5h-4v-1.5Z"
+      />
+    </svg>
+  )
+}
 
 export function CopyIcon({ size = defaults.size, className }: IconProps) {
   return (
@@ -163,6 +185,8 @@ export function ToolIcon({
       return <HomeIcon size={size} className={className} />
     case 'json':
       return <JsonIcon size={size} className={className} />
+    case 'markdown':
+      return <MarkdownIcon size={size} className={className} />
     default:
       return <JsonIcon size={size} className={className} />
   }
