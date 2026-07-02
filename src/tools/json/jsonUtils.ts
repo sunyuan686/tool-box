@@ -10,9 +10,43 @@ function indentString(option: IndentOption): string | number {
   return option === 'tab' ? '\t' : option
 }
 
+function leadingTrimOffset(input: string): number {
+  const match = input.match(/^\s*/)
+  return match ? match[0].length : 0
+}
+
 function getErrorPosition(message: string): number | undefined {
   const match = message.match(/position\s+(\d+)/i)
   return match ? Number(match[1]) : undefined
+}
+
+function getErrorLineColumn(message: string): { line: number; column: number } | undefined {
+  const match = message.match(/line\s+(\d+)\s+column\s+(\d+)/i)
+  if (!match) return undefined
+  return { line: Number(match[1]), column: Number(match[2]) }
+}
+
+function absoluteErrorLocation(
+  input: string,
+  trimmed: string,
+  leading: number,
+  rawMessage: string,
+): { line: number; column: number; position: number } | undefined {
+  const positionInTrimmed = getErrorPosition(rawMessage)
+  if (positionInTrimmed !== undefined) {
+    const position = leading + positionInTrimmed
+    const { line, column } = positionToLineColumn(input, position)
+    return { line, column, position }
+  }
+
+  const lineColumn = getErrorLineColumn(rawMessage)
+  if (lineColumn) {
+    const position = leading + lineColumnToOffset(trimmed, lineColumn.line, lineColumn.column)
+    const { line, column } = positionToLineColumn(input, position)
+    return { line, column, position }
+  }
+
+  return undefined
 }
 
 function positionToLineColumn(text: string, position: number) {
@@ -78,16 +112,23 @@ export function parseJson(input: string): JsonResult {
     return { ok: false, error: '请输入 JSON 内容' }
   }
 
+  const leading = leadingTrimOffset(input)
+
   try {
     const data = JSON.parse(trimmed)
     return { ok: true, data, formatted: trimmed }
   } catch (error) {
     const raw = error instanceof Error ? error.message : 'JSON 解析失败'
     const friendly = humanizeJsonError(raw)
-    const position = getErrorPosition(raw)
-    if (position !== undefined) {
-      const { line, column } = positionToLineColumn(input, position)
-      return { ok: false, error: friendly, line, column, position }
+    const location = absoluteErrorLocation(input, trimmed, leading, raw)
+    if (location) {
+      return {
+        ok: false,
+        error: friendly,
+        line: location.line,
+        column: location.column,
+        position: location.position,
+      }
     }
     return { ok: false, error: friendly }
   }
@@ -152,6 +193,156 @@ export function formatJson(input: string, indent: IndentOption): JsonResult {
 
   const formatted = JSON.stringify(parsed.data, null, indentString(indent))
   return { ok: true, data: parsed.data, formatted }
+}
+
+function repeatIndent(option: IndentOption, depth: number): string {
+  const unit = option === 'tab' ? '\t' : ' '.repeat(option)
+  return unit.repeat(Math.max(depth, 0))
+}
+
+/** Pretty-print JSON-like text without requiring valid syntax. */
+export function prettyPrintJsonStructure(input: string, indent: IndentOption): string {
+  let result = ''
+  let depth = 0
+  let inString = false
+  let escaped = false
+
+  const appendNewlineIndent = () => {
+    result += '\n' + repeatIndent(indent, depth)
+  }
+
+  const trimTrailingWhitespace = () => {
+    result = result.replace(/[ \t]+$/, '')
+  }
+
+  for (let i = 0; i < input.length; i++) {
+    const ch = input[i]
+
+    if (inString) {
+      result += ch
+      if (escaped) {
+        escaped = false
+        continue
+      }
+      if (ch === '\\') {
+        escaped = true
+        continue
+      }
+      if (ch === '"') {
+        inString = false
+      }
+      continue
+    }
+
+    if (ch === '"') {
+      inString = true
+      result += ch
+      continue
+    }
+
+    if (ch === '{' || ch === '[') {
+      result += ch
+      depth++
+      let j = i + 1
+      while (j < input.length && /\s/.test(input[j])) j++
+      const next = input[j]
+      if (next !== '}' && next !== ']') {
+        appendNewlineIndent()
+      }
+      continue
+    }
+
+    if (ch === '}' || ch === ']') {
+      depth = Math.max(0, depth - 1)
+      trimTrailingWhitespace()
+      appendNewlineIndent()
+      result += ch
+      continue
+    }
+
+    if (ch === ',') {
+      result += ch
+      appendNewlineIndent()
+      let j = i + 1
+      while (j < input.length && /\s/.test(input[j])) {
+        j++
+      }
+      i = j - 1
+      continue
+    }
+
+    if (ch === ':') {
+      result += ': '
+      let j = i + 1
+      while (j < input.length && /\s/.test(input[j])) {
+        j++
+      }
+      i = j - 1
+      continue
+    }
+
+    if (/\s/.test(ch)) {
+      if (result.at(-1) && !/\s/.test(result.at(-1)!)) {
+        const next = input.slice(i + 1).match(/\S/)?.[0]
+        if (next && next !== '}' && next !== ']' && next !== ',') {
+          result += ' '
+        }
+      }
+      continue
+    }
+
+    result += ch
+  }
+
+  return result.trimEnd()
+}
+
+export type BestEffortFormatResult = {
+  formatted: string
+  fullyValid: boolean
+  autoRepaired: boolean
+}
+
+/** Format as much as possible: strict parse, auto-repair, then structural pretty-print. */
+export function formatJsonBestEffort(input: string, indent: IndentOption): BestEffortFormatResult {
+  const trimmed = input.trim()
+  if (!trimmed) {
+    return { formatted: input, fullyValid: false, autoRepaired: false }
+  }
+
+  const strict = formatJson(input, indent)
+  if (strict.ok) {
+    return { formatted: strict.formatted, fullyValid: true, autoRepaired: false }
+  }
+
+  const repaired = repairJson(input, indent)
+  if (repaired.ok) {
+    return { formatted: repaired.formatted, fullyValid: true, autoRepaired: repaired.repaired === true }
+  }
+
+  return {
+    formatted: prettyPrintJsonStructure(input, indent),
+    fullyValid: false,
+    autoRepaired: false,
+  }
+}
+
+export function errorHighlightRange(
+  text: string,
+  position: number,
+): { from: number; to: number } {
+  const from = Math.min(Math.max(position, 0), text.length)
+  let to = Math.min(from + 1, text.length)
+  const token = /[^\s,:[\]{}"]/
+
+  while (to < text.length && token.test(text[to])) to++
+  if (to === from + 1 && from > 0 && token.test(text[from - 1])) {
+    let start = from - 1
+    while (start > 0 && token.test(text[start - 1])) start--
+    return { from: start, to: Math.max(to, from + 1) }
+  }
+
+  return { from, to: Math.max(to, from + 1) }
 }
 
 export function repairJson(input: string, indent: IndentOption): JsonResult & { repaired?: boolean } {
@@ -230,10 +421,17 @@ export function unescapeJsonString(input: string): JsonResult {
   } catch (error) {
     const raw = error instanceof Error ? error.message : '反转义失败'
     const friendly = humanizeJsonError(raw)
-    const position = getErrorPosition(raw)
-    if (position !== undefined) {
-      const { line, column } = positionToLineColumn(input, position)
-      return { ok: false, error: friendly, line, column, position }
+    const trimmed = input.trim()
+    const leading = leadingTrimOffset(input)
+    const location = absoluteErrorLocation(input, trimmed, leading, raw)
+    if (location) {
+      return {
+        ok: false,
+        error: friendly,
+        line: location.line,
+        column: location.column,
+        position: location.position,
+      }
     }
     return { ok: false, error: friendly }
   }

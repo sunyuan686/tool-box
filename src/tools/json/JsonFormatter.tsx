@@ -5,7 +5,8 @@ import { linter, lintGutter } from '@codemirror/lint'
 import { EditorView } from '@codemirror/view'
 import {
   escapeJsonString,
-  formatJson,
+  errorHighlightRange,
+  formatJsonBestEffort,
   lineColumnToOffset,
   minifyJson,
   parseJson,
@@ -105,16 +106,11 @@ function friendlyJsonLinter() {
     let from = 0
     let to = Math.min(1, text.length)
     if (issue.position !== undefined) {
-      from = issue.position
-      to = Math.min(from + 1, text.length)
+      ;({ from, to } = errorHighlightRange(text, issue.position))
     } else if (issue.line !== undefined && issue.column !== undefined) {
-      from = lineColumnToOffset(text, issue.line, issue.column)
-      to = Math.min(from + 1, text.length)
+      const position = lineColumnToOffset(text, issue.line, issue.column)
+      ;({ from, to } = errorHighlightRange(text, position))
     }
-
-    const line = view.state.doc.lineAt(from)
-    from = line.from
-    to = line.to
 
     return [
       {
@@ -143,6 +139,7 @@ export function JsonFormatter() {
   const [activeId, setActiveId] = useState(INITIAL_DOCUMENT.id)
   const [indent, setIndent] = useState<IndentOption>(2)
   const [repairPreview, setRepairPreview] = useState<RepairPreview | null>(null)
+  const [formatNotice, setFormatNotice] = useState<string | null>(null)
   const [workMode, setWorkMode] = useState<'edit' | 'compare'>('edit')
   const [compareConfig, setCompareConfig] = useState<DiffConfig>(() =>
     defaultCompareConfig([INITIAL_DOCUMENT], INITIAL_DOCUMENT.id),
@@ -176,6 +173,7 @@ export function JsonFormatter() {
 
   const handleInputChange = useCallback(
     (value: string) => {
+      setFormatNotice(null)
       patchActive({ content: value })
     },
     [patchActive],
@@ -191,6 +189,7 @@ export function JsonFormatter() {
   const handleSelectDoc = useCallback((id: string) => {
     setActiveId(id)
     setRepairPreview(null)
+    setFormatNotice(null)
   }, [])
 
   const handleNameChange = useCallback((id: string, name: string) => {
@@ -235,20 +234,30 @@ export function JsonFormatter() {
   )
 
   const handleFormat = useCallback(() => {
-    const result = formatJson(input, indent)
-    if (!result.ok) return
+    const result = formatJsonBestEffort(input, indent)
     patchActive({ content: result.formatted })
     applyOutput(result.formatted)
+    if (result.autoRepaired) {
+      setFormatNotice('已自动纠正语法错误并完成格式化')
+    } else {
+      setFormatNotice(null)
+    }
   }, [indent, input, patchActive, applyOutput])
 
   const handleFormatAll = useCallback(() => {
+    let repairedCount = 0
     const next = documents.map((doc) => {
       if (!doc.content.trim()) return doc
-      const result = formatJson(doc.content, indent)
-      if (!result.ok) return doc
+      const result = formatJsonBestEffort(doc.content, indent)
+      if (result.autoRepaired) repairedCount++
       return { ...doc, content: result.formatted, output: result.formatted }
     })
     setDocuments(next)
+    if (repairedCount > 0) {
+      setFormatNotice(`已自动纠正 ${repairedCount} 个文档的语法错误`)
+    } else {
+      setFormatNotice(null)
+    }
   }, [documents, indent])
 
   const handleRepair = useCallback(() => {
@@ -525,6 +534,12 @@ export function JsonFormatter() {
           />
         </div>
       </div>
+      ) : null}
+
+      {workMode === 'edit' && formatNotice && !inputIssue ? (
+        <div className="json-format-notice" role="status" aria-live="polite">
+          {formatNotice}
+        </div>
       ) : null}
 
       {workMode === 'edit' && inputIssue ? (
