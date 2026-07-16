@@ -26,6 +26,14 @@ export const tools: Tool[] = [
     available: true,
     icon: 'markdown',
   },
+  {
+    id: 'diff',
+    name: '文本合并',
+    description: '三路 diff 合并，左中右对比并选择性保留差异内容',
+    path: '/diff',
+    available: true,
+    icon: 'diff',
+  },
 ]
 
 export function getToolById(id: string) {

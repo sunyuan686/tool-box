@@ -1,6 +1,6 @@
 import { markdown } from '@codemirror/lang-markdown'
-import { EditorView } from '@codemirror/view'
 import CodeMirror from '@uiw/react-codemirror'
+import { codeEditorSyntax, codeEditorViewTheme } from '../../lib/codemirrorTheme'
 import { useCallback, useDeferredValue, useMemo, useRef, useState } from 'react'
 import { CopyIcon, DownloadIcon, FileOpenIcon, TrashIcon } from '../../components/icons/ToolIcons'
 import { MarkdownDocTabs } from './MarkdownDocTabs'
@@ -57,25 +57,6 @@ const INITIAL_DOCUMENT = createDocument({
   content: SAMPLE_MARKDOWN,
 })
 
-const editorTheme = EditorView.theme({
-  '&': {
-    height: '100%',
-    fontSize: '13px',
-  },
-  '.cm-scroller': {
-    fontFamily: 'var(--mono)',
-    lineHeight: '1.6',
-  },
-  '.cm-content': {
-    padding: '12px 0',
-  },
-  '.cm-gutters': {
-    backgroundColor: 'var(--editor-gutter)',
-    borderRight: '1px solid var(--border)',
-    color: 'var(--text-muted)',
-  },
-})
-
 export function MarkdownEditor() {
   const [documents, setDocuments] = useState<MarkdownDocument[]>([INITIAL_DOCUMENT])
   const [activeId, setActiveId] = useState(INITIAL_DOCUMENT.id)
@@ -98,7 +79,10 @@ export function MarkdownEditor() {
     [activeDoc],
   )
 
-  const editorExtensions = useMemo(() => [markdown(), editorTheme], [])
+  const editorExtensions = useMemo(
+    () => [markdown(), codeEditorSyntax, codeEditorViewTheme],
+    [],
+  )
 
   const handleInputChange = useCallback(
     (value: string) => {
@@ -263,6 +247,7 @@ export function MarkdownEditor() {
               key={activeDoc.id}
               value={content}
               height="100%"
+              theme="none"
               extensions={editorExtensions}
               onChange={handleInputChange}
               basicSetup={{

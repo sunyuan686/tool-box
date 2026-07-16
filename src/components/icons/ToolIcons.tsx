@@ -71,7 +71,39 @@ export function ShieldLocalIcon({ size = defaults.size, className }: IconProps) 
   )
 }
 
-export type ToolIconName = 'home' | 'json' | 'markdown'
+export function DiffIcon({ size = defaults.size, className }: IconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      width={size}
+      height={size}
+      className={className}
+      aria-hidden="true"
+    >
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        d="M3.5 5.5h5M3.5 10h3.5M3.5 14.5h5"
+      />
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        d="M11.5 5.5h5M13 10h3.5M11.5 14.5h5"
+      />
+      <path
+        fill="currentColor"
+        d="M9.25 8.25h1.5v3.5h-1.5V8.25Zm0 0a.75.75 0 1 1 1.5 0 .75.75 0 0 1-1.5 0Z"
+      />
+    </svg>
+  )
+}
+
+export type ToolIconName = 'home' | 'json' | 'markdown' | 'diff'
 
 export function MarkdownIcon({ size = defaults.size, className }: IconProps) {
   return (
@@ -187,6 +219,8 @@ export function ToolIcon({
       return <JsonIcon size={size} className={className} />
     case 'markdown':
       return <MarkdownIcon size={size} className={className} />
+    case 'diff':
+      return <DiffIcon size={size} className={className} />
     default:
       return <JsonIcon size={size} className={className} />
   }

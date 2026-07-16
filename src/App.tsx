@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { HomePage } from './pages/HomePage'
 import { JsonFormatter } from './tools/json/JsonFormatter'
+import { DiffMerger } from './tools/diff/DiffMerger'
 
 const MarkdownEditor = lazy(() =>
   import('./tools/markdown/MarkdownEditor').then((module) => ({
@@ -25,6 +26,7 @@ function App() {
               </Suspense>
             }
           />
+          <Route path="diff" element={<DiffMerger />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

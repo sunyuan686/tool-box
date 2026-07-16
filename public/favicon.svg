@@ -1,14 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" role="img" aria-label="工具匣">
-  <rect width="32" height="32" rx="8" fill="#0C141D"/>
-  <path d="M10 9.5h12a2.5 2.5 0 0 1 2.5 2.5V14H7.5v-2a2.5 2.5 0 0 1 2.5-2.5Z" fill="url(#handle)"/>
-  <rect x="6.8" y="14" width="18.4" height="11.6" rx="3.2" fill="#101A26" stroke="#4A8FE7" stroke-width="1"/>
-  <path fill="none" stroke="#5C9DFF" stroke-width="1.28" stroke-linecap="round" stroke-linejoin="round" d="M11.4 17.8c-.92 0-1.48.68-1.48 1.48v1.04c0 .8.56 1.48 1.48 1.48M20.6 17.8c.92 0 1.48.68 1.48 1.48v1.04c0 .8-.56 1.48-1.48 1.48"/>
-  <path stroke="#38BDF8" stroke-width="1.08" stroke-linecap="round" d="M14.8 20.6h2.4"/>
-  <circle cx="16" cy="17" r=".68" fill="#3D8BFD"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <rect width="32" height="32" rx="8" fill="#09090B"/>
+  <path d="M8.2 9.2h15.6a2.4 2.4 0 0 1 2.4 2.4v2H5.8v-2a2.4 2.4 0 0 1 2.4-2.4Z" fill="url(#handle)"/>
+  <rect x="6.8" y="14" width="18.4" height="11.6" rx="3.2" fill="#0E0E10" stroke="#52525B" stroke-width="1"/>
+  <path fill="none" stroke="#E4E4E7" stroke-width="1.28" stroke-linecap="round" stroke-linejoin="round" d="M11.4 17.8c-.92 0-1.48.68-1.48 1.48v1.04c0 .8.56 1.48 1.48 1.48M20.6 17.8c.92 0 1.48.68 1.48 1.48v1.04c0 .8-.56 1.48-1.48 1.48"/>
+  <path stroke="#FAFAFA" stroke-width="1.08" stroke-linecap="round" d="M14.8 20.6h2.4"/>
+  <circle cx="16" cy="17" r=".68" fill="#FAFAFA"/>
   <defs>
-    <linearGradient id="handle" x1="7.5" y1="9.5" x2="24.5" y2="14" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#2563EB"/>
-      <stop offset="1" stop-color="#38BDF8"/>
+    <linearGradient id="handle" x1="5.8" y1="9.2" x2="26.2" y2="13.6" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#52525B"/>
+      <stop offset="1" stop-color="#D4D4D8"/>
     </linearGradient>
   </defs>
 </svg>

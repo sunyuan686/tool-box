@@ -29,6 +29,7 @@ import { JsonCompareView } from './JsonCompareView'
 import { defaultCompareConfig, type DiffConfig } from './diffTypes'
 import { RepairConfirmDialog, type RepairPreview } from './RepairConfirmDialog'
 import { CopyIcon, DownloadIcon, FileOpenIcon, TrashIcon } from '../../components/icons/ToolIcons'
+import { codeEditorSyntax, codeEditorViewTheme } from '../../lib/codemirrorTheme'
 
 const SAMPLE_JSON = `{
   "name": "tool-box",
@@ -45,27 +46,11 @@ const INITIAL_DOCUMENT = createDocument({
   content: SAMPLE_JSON,
 })
 
-const editorTheme = EditorView.theme({
-  '&': {
-    height: '100%',
-    fontSize: '13px',
-  },
-  '.cm-scroller': {
-    fontFamily: 'var(--mono)',
-    lineHeight: '1.6',
-  },
-  '.cm-content': {
-    padding: '12px 0',
-  },
-  '.cm-gutters': {
-    backgroundColor: 'var(--editor-gutter)',
-    borderRight: '1px solid var(--border)',
-    color: 'var(--text-muted)',
-  },
+const jsonLintTheme = EditorView.theme({
   '.cm-tooltip.cm-tooltip-lint': {
-    backgroundColor: '#1a2330',
+    backgroundColor: '#121214',
     border: '1px solid rgba(255, 107, 107, 0.5)',
-    color: '#e8edf4',
+    color: '#e4e4e7',
     borderRadius: '8px',
     padding: '2px 0',
     boxShadow: '0 10px 28px rgba(0, 0, 0, 0.5)',
@@ -165,11 +150,14 @@ export function JsonFormatter() {
   )
 
   const inputExtensions = useMemo(
-    () => [json(), friendlyJsonLinter(), lintGutter(), editorTheme],
+    () => [json(), friendlyJsonLinter(), lintGutter(), codeEditorSyntax, codeEditorViewTheme, jsonLintTheme],
     [],
   )
 
-  const outputExtensions = useMemo(() => [json(), EditorView.editable.of(false), editorTheme], [])
+  const outputExtensions = useMemo(
+    () => [json(), EditorView.editable.of(false), codeEditorSyntax, codeEditorViewTheme],
+    [],
+  )
 
   const handleInputChange = useCallback(
     (value: string) => {
@@ -599,6 +587,7 @@ export function JsonFormatter() {
               key={activeDoc.id}
               value={input}
               height="100%"
+              theme="none"
               extensions={inputExtensions}
               onChange={handleInputChange}
               onCreateEditor={(view) => {
@@ -624,6 +613,7 @@ export function JsonFormatter() {
               key={`${activeDoc.id}-out`}
               value={output}
               height="100%"
+              theme="none"
               extensions={outputExtensions}
               basicSetup={{
                 lineNumbers: true,

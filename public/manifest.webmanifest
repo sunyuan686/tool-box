@@ -4,8 +4,8 @@
   "description": "个人常用开发者小工具，本地运行，隐私安全。",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0b0f14",
-  "theme_color": "#0e1319",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
   "icons": [
     {
       "src": "/favicon.svg",
