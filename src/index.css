@@ -419,12 +419,33 @@ p {
 .json-doc-name {
   flex: 1;
   min-width: 72px;
+  max-width: 100%;
   border: none;
   background: transparent;
   color: var(--text-heading);
   font: inherit;
   font-size: 13px;
+  line-height: 1.3;
   padding: 4px 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+span.json-doc-name {
+  display: block;
+}
+
+.json-doc-name.is-placeholder {
+  color: var(--text-muted);
+}
+
+.json-doc-name.is-editing {
+  cursor: text;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.18);
 }
 
 .json-doc-name::placeholder {
@@ -514,7 +535,7 @@ p {
   border-color: rgba(62, 207, 142, 0.35);
 }
 
-.json-doc-tab input.json-doc-name:read-only {
+.json-doc-name.is-readonly {
   cursor: default;
   color: var(--text-muted);
 }
