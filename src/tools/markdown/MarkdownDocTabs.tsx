@@ -1,3 +1,4 @@
+import { EditableTabName } from '../../components/EditableTabName'
 import type { MarkdownDocument } from './markdownDocuments'
 
 type MarkdownDocTabsProps = {
@@ -37,14 +38,10 @@ export function MarkdownDocTabs({
             >
               <span className="json-doc-status valid" aria-hidden="true" />
             </button>
-            <input
-              type="text"
-              className="json-doc-name"
-              value={doc.name}
-              onChange={(event) => onNameChange(doc.id, event.target.value)}
-              onFocus={() => onSelect(doc.id)}
-              placeholder="备注名称"
-              aria-label={`文档备注：${doc.name}`}
+            <EditableTabName
+              name={doc.name}
+              onSelect={() => onSelect(doc.id)}
+              onNameChange={(name) => onNameChange(doc.id, name)}
             />
             {documents.length > 1 ? (
               <button

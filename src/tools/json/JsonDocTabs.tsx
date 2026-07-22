@@ -1,3 +1,4 @@
+import { EditableTabName } from '../../components/EditableTabName'
 import { parseJson } from './jsonUtils'
 import type { JsonDocument } from './jsonDocuments'
 
@@ -54,15 +55,11 @@ export function JsonDocTabs({
                 {isRight ? <span className="compare-badge right">B</span> : null}
               </span>
             ) : null}
-            <input
-              type="text"
-              className="json-doc-name"
-              value={doc.name}
-              onChange={(event) => onNameChange(doc.id, event.target.value)}
-              onFocus={() => onSelect(doc.id)}
-              placeholder="备注名称"
-              aria-label={`文档备注：${doc.name}`}
+            <EditableTabName
+              name={doc.name}
               readOnly={workMode === 'compare'}
+              onSelect={() => onSelect(doc.id)}
+              onNameChange={(name) => onNameChange(doc.id, name)}
             />
             {documents.length > 1 && workMode === 'edit' ? (
               <button
