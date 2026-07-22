@@ -29,6 +29,7 @@ import { JsonCompareView } from './JsonCompareView'
 import { defaultCompareConfig, type DiffConfig } from './diffTypes'
 import { RepairConfirmDialog, type RepairPreview } from './RepairConfirmDialog'
 import { CopyIcon, DownloadIcon, FileOpenIcon, TrashIcon } from '../../components/icons/ToolIcons'
+import { HelpTip } from '../../components/HelpTip'
 import { codeEditorSyntax, codeEditorViewTheme } from '../../lib/codemirrorTheme'
 
 const SAMPLE_JSON = `{
@@ -440,9 +441,12 @@ export function JsonFormatter() {
           <button type="button" className="btn primary" onClick={handleFormat}>
             格式化
           </button>
-          <button type="button" className="btn accent" onClick={handleMinifyCopy}>
-            压缩复制
-          </button>
+          <span className="btn-with-help">
+            <button type="button" className="btn accent" onClick={handleMinifyCopy}>
+              压缩复制
+            </button>
+            <HelpTip label="压缩复制说明">压缩当前输入，并复制压缩结果</HelpTip>
+          </span>
           <button type="button" className="btn" onClick={handleMinify}>
             压缩
           </button>
