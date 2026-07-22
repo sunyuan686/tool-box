@@ -52,6 +52,7 @@ body,
 body {
   margin: 0;
   min-width: 320px;
+  overflow: hidden;
 }
 
 a {
@@ -74,7 +75,9 @@ p {
 .app-shell {
   display: grid;
   grid-template-columns: 240px minmax(0, 1fr);
-  min-height: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .sidebar {
@@ -84,6 +87,8 @@ p {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  min-height: 0;
+  overflow: auto;
 }
 
 .sidebar-brand {
@@ -178,13 +183,16 @@ p {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  min-height: 100%;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
 }
 
 .topbar {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  flex-shrink: 0;
   padding: 10px 24px;
   border-bottom: 1px solid var(--border);
   background: var(--bg-elevated);
@@ -214,6 +222,7 @@ p {
   padding: 24px;
   display: flex;
   flex-direction: column;
+  overflow: auto;
 }
 
 .page-header h1 {
@@ -319,6 +328,16 @@ p {
   gap: 12px;
   min-height: 0;
   flex: 1;
+  overflow: hidden;
+}
+
+.json-tool-head,
+.json-doc-tabs,
+.toolbar,
+.json-format-notice,
+.json-parse-error,
+.diff-tool-hint {
+  flex-shrink: 0;
 }
 
 .json-tool-head {
@@ -575,7 +594,7 @@ span.json-doc-name {
   display: flex;
   flex-direction: column;
   flex: 1;
-  min-height: 360px;
+  min-height: 0;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
@@ -926,6 +945,7 @@ span.json-doc-name {
   gap: 16px;
   flex: 1;
   min-height: 0;
+  overflow: hidden;
 }
 
 .editor-panel {
@@ -1038,12 +1058,17 @@ span.json-doc-name {
 
 .editor-surface {
   flex: 1;
-  min-height: 360px;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .editor-surface .cm-editor {
   height: 100%;
   background: var(--editor-bg);
+}
+
+.editor-surface .cm-scroller {
+  overscroll-behavior: contain;
 }
 
 .editor-surface .cm-editor.cm-focused {
@@ -1052,6 +1077,7 @@ span.json-doc-name {
 
 .markdown-preview-surface {
   overflow: auto;
+  overscroll-behavior: contain;
   padding: 16px 18px;
   background: var(--editor-bg);
 }
@@ -1361,6 +1387,7 @@ span.json-doc-name {
   flex: 1;
   min-height: 0;
   overflow: auto;
+  overscroll-behavior: contain;
 }
 
 .diff-split-row {
@@ -1508,6 +1535,7 @@ span.json-doc-name {
   flex: 1;
   min-height: 0;
   overflow: auto;
+  overscroll-behavior: contain;
 }
 
 .merge-diff-scroll:focus-visible {
@@ -1677,12 +1705,14 @@ span.json-doc-name {
 @media (max-width: 1080px) {
   .app-shell {
     grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
   }
 
   .sidebar {
     border-right: none;
     border-bottom: 1px solid var(--border);
     padding-bottom: 12px;
+    overflow: visible;
   }
 
   .sidebar-nav {
@@ -1692,10 +1722,7 @@ span.json-doc-name {
 
   .editor-grid {
     grid-template-columns: 1fr;
-  }
-
-  .editor-surface {
-    min-height: 280px;
+    grid-template-rows: repeat(2, minmax(0, 1fr));
   }
 }
 
